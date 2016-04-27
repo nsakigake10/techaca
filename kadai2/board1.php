@@ -23,15 +23,16 @@ $password = 'K/ai1104';
 try{
 
   if(isset($_POST['name'])){
-      $name = escapeshellarg($_POST['name']);
-  }    
+      $name = ($_POST['name']);
+          }    
   if(isset($_POST['message'])){
-      $message = escapeshellarg($_POST['message']);
+      $message = ($_POST['message']);
       $message = nl2br($message);//改行処理
           }
   
 
      print('<br>');
+
 
     $dbh = new PDO($dsn, $user, $password);
 
