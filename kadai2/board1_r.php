@@ -57,12 +57,16 @@ try{
         exit('文字コードを指定できませんでした。');
     }
 
-    $sql = 'select * from board';
+    $sql = '';
 
     if((isset($_POST['name']))&&(isset($_POST['message'])) ){
-    $sql = "insert into board (name, message) values (?, ?)";}
+    $sql = "insert into board (name, message) values (?, ?)";
+  }
+  
     $stmt = $dbh->prepare($sql);
+
     if((isset($_POST['name']))&&(isset($_POST['message'])) ){
+
     $flag = $stmt->execute(array("$name", "$message"));
 
     if (!$flag){
