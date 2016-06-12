@@ -11,25 +11,20 @@ $smarty->config_dir = dirname(__FILE__) . "/config";
 
 session_start();
 try {
-//データベースの初期設定
+    //データベースの初期設定
     $dsn = 'mysql:dbname=kadai3;host=127.0.0.1';
     $user = 'root';
     $password = 'K/ai1104';
     $error_message = '';
 
 
-    if (isset($_POST['postname'])) {
-        $name = ($_POST['postname']);
-    }
-
-    if (isset($_POST['message'])) {
-        $message = ($_POST['message']);
-        $message = nl2br($message);//改行処理F
-    }
-
-    if (isset($_SESSION["loginID"])) { //ログインされたユーザーのidを記憶  login画面から
-        $memberID = $_SESSION["loginID"]; //投稿者は透きに投稿時のユーザー名、本文を決められるので
+    
+    //ログインされたユーザーのidを記憶  login画面からデータを受け取る
+    if (isset($_SESSION["loginID"])) { 
+        //投稿者は好きに投稿時のユーザー名、本文を決められるので
         //ユーザー固有のIDで投稿を管理
+        $memberID = $_SESSION["loginID"]; 
+        
     }
 
 
@@ -41,15 +36,18 @@ try {
     }
 
     $result = $dbh->query('SET NAMES utf8');
-//文字コード指定
-//一回だけ使用するようなメソッドはqueryをつかう
+    //文字コード指定
+    //一回だけ使用するようなメソッドはqueryをつかう
 
     if (!$result) {
         exit('文字コードを指定できませんでした。');
     }
 
-//データを投稿するときの処理
+    //データを投稿するときの処理
     if ((isset($_POST['postname'])) && (isset($_POST['message']))) {
+        $name = ($_POST['postname']);
+        $message = ($_POST['message']);
+        $message = nl2br($message);//改行処理F
         //ユーザー・本文ともに入力されてなければエラー表示
         if ($name == NULL || $message == NULL) {
             $error_message = '投稿者名と本文を正しく入力してください。';
@@ -69,7 +67,7 @@ try {
     }
 
 
-//投稿され本文の表示処理
+    //投稿され本文の表示処理
 
     $sql = 'select userID, message,ID, memberID from post';
     $stmt = $dbh->prepare($sql);
@@ -92,11 +90,11 @@ try {
             $deletebutton = '<form action="http://localhost:8888/kadai3/smarty_test/edit-smarty.php/" method="POST"><input type="hidden" name="deletenum" value="' . $edit_id . '" /><button>消去</button></form>';
 
         }
-        //ユーザーID、本文、編集・消去ボタンについての内容をどんどん配列にぶっこむ
+        //ユーザーID、本文、編集・消去ボタンについての内容をどんどん配列に加える
         $data[] = array('name' => $userID, 'message' => $posted_message, 'edit' => $editbutton, 'delete' => $deletebutton);
     }
 
-//配列をテンプレートに渡す
+    //配列をテンプレートに渡す
     $smarty->assign('member', $data);
 
     if ($error_message) {

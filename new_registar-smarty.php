@@ -47,7 +47,9 @@ try {
 
             $error_message = '登録情報は半角英数で入力してください'; //半角英数限定
 
-        } else if (($new_user_name == NULL) || ($new_password == NULL) || ($new_user_id == NULL)) {//入力でーた空ならエラー
+        } 
+        //入力でーた空ならエラー
+        else if (($new_user_name == NULL) || ($new_password == NULL) || ($new_user_id == NULL)) {
 
             $error_message = '入力が不完全です。';
 

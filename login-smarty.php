@@ -32,12 +32,12 @@ try {
     }
 
 
-// エラーメッセージを格納する変数を初期化
+    // エラーメッセージを格納する変数を初期化
     $error_message = "";
-//ログインされたuserIDに対応するパスワードを保持する変数の宣言
+    //ログインされたuserIDに対応するパスワードを保持する変数の宣言
     $hit_password = '';
-// ログインボタンが押されたかを判定
-// 初めてのアクセスでは認証は行わずエラーメッセージは表示しないように
+    // ログインボタンが押されたかを判定
+    // 初めてのアクセスでは認証は行わずエラーメッセージは表示しないように
     if (isset($_POST["login"])) {
 
 
@@ -58,14 +58,13 @@ try {
         //user_nameがデータベースにない時の処理
         if (!$usr_flag) {
             $error_message = 'ユーザー名が存在しません。';
-        } //ユーザー名の入力が不完全のとき
+        }
+        //ユーザー名の入力が不完全のとき
         else if (($user_password == NULL) || ($user_name == NULL)) {
             $error_message = 'ユーザー名とパスワード両方入力してください';
         } else if ($hit_password == $user_password) { //正常にユーザー名、パスワードが見つかれば
 
-            // ログインが成功した証をセッションに保存
-            //$_SESSION["user_name"] = $_POST["user_name"];
-
+            
             // 管理者専用画面へリダイレクト
             $login_url = 'http://localhost:8888/kadai3/smarty_test/board-smarty.php';
             header("Location: {$login_url}");
@@ -77,7 +76,7 @@ try {
     }
 
 
-//新規登録処理
+    //新規登録処理
 
     if (isset($_POST["new_registar"])) {
         $login_url = 'http://localhost:8888/kadai3/smarty_test/new_registar-smarty.php';
@@ -85,7 +84,7 @@ try {
         exit;
     }
 
-//エラーメッセージの表示
+    //エラーメッセージの表示
     if ($error_message) {
         print '<font color="red">' . $error_message . '</font>';
     }

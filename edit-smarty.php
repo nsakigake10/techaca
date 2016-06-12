@@ -19,10 +19,7 @@ try{
 
     $dbh = new PDO($dsn, $user, $password);
 
-    //編集するpostデータの投稿番号を得る
-    if(isset($_POST['edit_num'])){
-        $edit_num = $_POST['edit_num'];
-    }
+   
 
     //編集後の本文の更新を行う
     if(isset($_POST['edit_message'])){
@@ -54,6 +51,7 @@ try{
     //編集ボタンが押された時の処理
     if(isset($_POST["editnum"])) {
 
+        //編集するpostデータの投稿番号を得る
         $edit_num = $_POST["editnum"]; //対象となる投稿の番号を得る
         //該当する投稿をデータベースから引っ張ってくる
         $sql = "select userID,message from post where ID= ?";
