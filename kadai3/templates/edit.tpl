@@ -2,7 +2,7 @@
 <head>
     <title>編集場面</title></head>
     <body>
-    <form method="POST" action="http://localhost:8888/kadai3/smarty_test/edit-smarty.php">
+    <form method="POST" action="edit-smarty.php">
     <textarea name="edit_userID" cols="30" rows="1">{$userID}
             </textarea><br />
     <textarea name="edit_message" cols="30" rows="5">{$message}

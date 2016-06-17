@@ -43,8 +43,8 @@ try {
 
         // データベース内のmemberテーブルのnameカラムから入力されたユーザーネームが存在するか確認
         $usr_sql = "select ID,password from member where name= ?";  //sql文
-        $usr_stmt = $dbh->prepare($usr_sql);              //文の準備
-        $usr_flag = $usr_stmt->execute(array($user_name));   //データの内容を補足
+        $usr_stmt = $dbh->prepare($usr_sql);                        //文の準備
+        $usr_flag = $usr_stmt->execute(array($user_name));          //データの内容を補足
 
 
         //hitしたユーザーネームに対応するパスワードを取り出す
@@ -58,18 +58,20 @@ try {
         //user_nameがデータベースにない時の処理
         if (!$usr_flag) {
             $error_message = 'ユーザー名が存在しません。';
-        }
+        } 
         //ユーザー名の入力が不完全のとき
         else if (($user_password == NULL) || ($user_name == NULL)) {
             $error_message = 'ユーザー名とパスワード両方入力してください';
-        } else if ($hit_password == $user_password) { //正常にユーザー名、パスワードが見つかれば
+        } 
+        //正常にユーザー名、パスワードが見つかれば
+        else if ($hit_password == $user_password) { 
 
-            
             // 管理者専用画面へリダイレクト
-            $login_url = 'http://localhost:8888/kadai3/smarty_test/board-smarty.php';
+            $login_url = 'board-smarty.php';
             header("Location: {$login_url}");
             exit;
-        } else {
+        } 
+        else {
             $error_message = 'ユーザー名またはパスワードが異なります。';
         }
 
@@ -79,7 +81,7 @@ try {
     //新規登録処理
 
     if (isset($_POST["new_registar"])) {
-        $login_url = 'http://localhost:8888/kadai3/smarty_test/new_registar-smarty.php';
+        $login_url = 'new_registar-smarty.php';
         header("Location: {$login_url}");
         exit;
     }

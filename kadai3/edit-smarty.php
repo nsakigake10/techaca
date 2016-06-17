@@ -20,7 +20,6 @@ try{
     $dbh = new PDO($dsn, $user, $password);
 
    
-
     //編集後の本文の更新を行う
     if(isset($_POST['edit_message'])){
 
@@ -43,7 +42,7 @@ try{
 
     //掲示板に戻る
     if(isset($_POST['edit_userID'])||(isset($_POST['edit_message']))){
-        $login_url = 'http://localhost:8888/kadai3/smarty_test/board-smarty.php';
+        $login_url = 'board-smarty.php';
         header("Location: {$login_url}");
         exit;
     }
@@ -51,8 +50,8 @@ try{
     //編集ボタンが押された時の処理
     if(isset($_POST["editnum"])) {
 
-        //編集するpostデータの投稿番号を得る
-        $edit_num = $_POST["editnum"]; //対象となる投稿の番号を得る
+        //対象となる投稿の番号を得る
+        $edit_num = $_POST["editnum"]; 
         //該当する投稿をデータベースから引っ張ってくる
         $sql = "select userID,message from post where ID= ?";
         $stmt = $dbh->prepare($sql);
@@ -79,7 +78,7 @@ try{
         $stmt = $dbh->prepare($sql);
         $flag = $stmt->execute(array($delete_num));
 
-        $login_url = 'http://localhost:8888/kadai3/smarty_test/board-smarty.php';
+        $login_url = 'board-smarty.php';
         header("Location: {$login_url}");
         exit();
 

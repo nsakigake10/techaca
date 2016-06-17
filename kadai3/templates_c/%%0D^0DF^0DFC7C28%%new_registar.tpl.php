@@ -1,3 +1,5 @@
+<?php /* Smarty version 2.6.25-dev, created on 2016-06-08 02:31:23
+         compiled from new_registar.tpl */ ?>
 <html>
 <head>
     <title>新規登録画面</title>
@@ -6,7 +8,7 @@
 
 
 
-<form action= "new_registar-smarty.php" method="POST">
+<form action= "http://localhost:8888/kadai3/smarty_test/new_registar-smarty.php" method="POST">
 
     新規登録者<br />
     ID       :<input type="text" name="new_user_id" value="" /><br />
@@ -16,7 +18,7 @@
 
 </form>
 
-<form action= "login-smarty.php" method="POST">
+<form action= "http://localhost:8888/kadai3/smarty_test/login-smarty.php" method="POST">
 
 	<input type="submit" value="戻る" />
 

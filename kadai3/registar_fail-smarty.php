@@ -11,7 +11,7 @@ $smarty->config_dir = dirname(__FILE__) . "/config";
 
 
 if(isset($_POST['fail'])){
-    $login_url = 'http://localhost:8888/kadai3/smarty_test/new_registar-smarty.php';
+    $login_url = 'new_registar-smarty.php';
     header("Location: {$login_url}");
     exit;
 }

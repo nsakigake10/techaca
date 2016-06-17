@@ -43,19 +43,21 @@ try {
         }
 
         //入力内容が半角英数字以外ならエラー
-        if (ctype_alpha($new_password) || ctype_alpha($new_user_name) || (ctype_alpha($new_user_id))) {
+        if (!(ctype_alpha($new_user_name)) || !(ctype_alpha($new_user_id))) {
 
-            $error_message = '登録情報は半角英数で入力してください'; //半角英数限定
+            $error_message = 'ID、ユーザー名は半角英数で入力してください'; //半角英限定
 
-        } 
-        //入力でーた空ならエラー
-        else if (($new_user_name == NULL) || ($new_password == NULL) || ($new_user_id == NULL)) {
+        } else if (!(ctype_alnum($new_password))){
+
+            $error_message = 'パスワードは半角英数字を入力してください';//半角英数限定  
+
+        } else if (($new_user_name == NULL) || ($new_password == NULL) || ($new_user_id == NULL)) {//入力でーた空ならエラー
 
             $error_message = '入力が不完全です。';
 
         } else if ($stmt->fetch(PDO::FETCH_ASSOC) != NULL) { //実行結果がNULL以外なら新規登録失敗
 
-            $login_url = 'http://localhost:8888/kadai3/smarty_test/registar_fail-smarty.php';
+            $login_url = 'registar_fail-smarty.php';
             header("Location: {$login_url}");
             exit;
 
@@ -67,7 +69,7 @@ try {
             $registar_time = date("YmdHis", $time);
             $flag = $stmt->execute(array($new_user_id, $new_user_name, $new_password, $registar_time));
 
-            $login_url = 'http://localhost:8888/kadai3/smarty_test/login-smarty.php';
+            $login_url = 'login-smarty.php';
             header("Location: {$login_url}");
             exit;
         }

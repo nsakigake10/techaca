@@ -19,7 +19,8 @@ try {
 
 
     
-    //ログインされたユーザーのidを記憶  login画面からデータを受け取る
+
+    //ログインされたユーザーのidを記憶  login画面からデータ受け取る
     if (isset($_SESSION["loginID"])) { 
         //投稿者は好きに投稿時のユーザー名、本文を決められるので
         //ユーザー固有のIDで投稿を管理
@@ -48,6 +49,7 @@ try {
         $name = ($_POST['postname']);
         $message = ($_POST['message']);
         $message = nl2br($message);//改行処理F
+
         //ユーザー・本文ともに入力されてなければエラー表示
         if ($name == NULL || $message == NULL) {
             $error_message = '投稿者名と本文を正しく入力してください。';
@@ -68,7 +70,6 @@ try {
 
 
     //投稿され本文の表示処理
-
     $sql = 'select userID, message,ID, memberID from post';
     $stmt = $dbh->prepare($sql);
     $stmt->execute();
@@ -86,8 +87,8 @@ try {
         //データベースにpostされたメッセージの投稿者IDとログインしたユーザーIDが等しい場合
         if ($memberID == $result['memberID']) {
             //取り出したメッセージのIDを送信するフォームを保持する変数作成
-            $editbutton = '<form action="http://localhost:8888/kadai3/smarty_test/edit-smarty.php/" method="POST"><input type="hidden" name="editnum" value="' . $edit_id . '" /><button>編集する</button></form>';
-            $deletebutton = '<form action="http://localhost:8888/kadai3/smarty_test/edit-smarty.php/" method="POST"><input type="hidden" name="deletenum" value="' . $edit_id . '" /><button>消去</button></form>';
+            $editbutton = '<form action="edit-smarty.php" method="POST"><input type="hidden" name="editnum" value="' . $edit_id . '" /><button>編集する</button></form>';
+            $deletebutton = '<form action="edit-smarty.php" method="POST"><input type="hidden" name="deletenum" value="' . $edit_id . '" /><button>消去</button></form>';
 
         }
         //ユーザーID、本文、編集・消去ボタンについての内容をどんどん配列に加える

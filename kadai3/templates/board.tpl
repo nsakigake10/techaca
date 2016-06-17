@@ -5,7 +5,7 @@
 
 <body>
 
-<form method="POST" action="http://localhost:8888/kadai3/smarty_test/board-smarty.php">
+<form method="POST" action="board-smarty.php">
     ユーザー名：<br />
     <textarea name="postname" cols="30" rows="1"></textarea><br />
     本文：<br />
@@ -17,7 +17,7 @@
     <input type="submit" value="投稿する" />
 </form>
 
-<form action="http://localhost:8888/kadai3/smarty_test/login-smarty.php/">
+<form action="login-smarty.php">
     <input type="submit" value="ログアウト" />
 </form>
 
