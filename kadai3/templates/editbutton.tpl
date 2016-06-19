@@ -1,3 +1,3 @@
-<form action="edit.php" method="POST">
-    <input type="submit"  value="編集する"/>
-</form>
+<form action="edit-smarty.php" method="POST">
+<input type="hidden" name="editnum" value="' . $edit_id . '" />
+<button>編集する</button></form>';

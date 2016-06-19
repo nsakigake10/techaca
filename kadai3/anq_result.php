@@ -13,6 +13,5 @@ if (!isset($_SESSION["user_name"])) {
 } else {
     $login_url = "board-smarty.php";//これより前に文字の出力禁止
     header("Location: {$login_url}");
-    print "ログイン成功";
 }
 ?>

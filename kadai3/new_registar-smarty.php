@@ -1,15 +1,11 @@
 <?php
 
-require( dirname( __FILE__ ).'/libs/Smarty.class.php' );
-
-$smarty = new Smarty();
-
-$smarty->template_dir = dirname( __FILE__ ).'/templates'; //テンプレートファイル
-$smarty->compile_dir  = dirname( __FILE__ ).'/templates_c'; //コンパイル結果格納
-$smarty->cache_dir = dirname(__FILE__) . "/cache";
-$smarty->config_dir = dirname(__FILE__) . "/config";
-
 session_start();
+
+require_once($_SERVER["DOCUMENT_ROOT"]."/kadai3/smarty_test/MySmarty.class.php");
+
+//新しく作ったMySmartyインスタンスの作成
+$smarty = new MySmarty();
 
 try {
     $dsn = 'mysql:dbname=kadai3;host=127.0.0.1';
@@ -42,18 +38,17 @@ try {
             $new_password = ($_POST['new_password']);
         }
 
-        //入力内容が半角英数字以外ならエラー
-        if (!(ctype_alpha($new_user_name)) || !(ctype_alpha($new_user_id))) {
 
-            $error_message = 'ID、ユーザー名は半角英数で入力してください'; //半角英限定
 
-        } else if (!(ctype_alnum($new_password))){
-
-            $error_message = 'パスワードは半角英数字を入力してください';//半角英数限定  
-
-        } else if (($new_user_name == NULL) || ($new_password == NULL) || ($new_user_id == NULL)) {//入力でーた空ならエラー
+        if (($new_user_name == NULL) || ($new_password == NULL) || ($new_user_id == NULL)){//入力でーた空ならエラー
 
             $error_message = '入力が不完全です。';
+
+        } 
+        //入力内容が半角英数字以外ならエラー
+        else if (!(ctype_alnum($new_user_name)) || !(ctype_alnum($new_user_id)) || !(ctype_alnum($new_password))){
+
+            $error_message = '登録内容は半角英数字を入力してください';//半角英数限定  
 
         } else if ($stmt->fetch(PDO::FETCH_ASSOC) != NULL) { //実行結果がNULL以外なら新規登録失敗
 
@@ -87,13 +82,3 @@ try {
 }
 $smarty->display('new_registar.tpl');
 ?>
-
-
-
-
-/**
-* Created by PhpStorm.
-* User: nagashimakaito
-* Date: 2016/05/19
-* Time: 12:35
-*/

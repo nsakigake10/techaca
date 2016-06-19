@@ -1,15 +1,13 @@
 <?php
 
-require( dirname( __FILE__ ).'/libs/Smarty.class.php' );
-
-$smarty = new Smarty();
-
-$smarty->template_dir = dirname( __FILE__ ).'/templates'; //テンプレートファイル
-$smarty->compile_dir  = dirname( __FILE__ ).'/templates_c'; //コンパイル結果格納
-$smarty->cache_dir = dirname(__FILE__) . "/cache";
-$smarty->config_dir = dirname(__FILE__) . "/config";
-
 session_start();
+
+require_once($_SERVER["DOCUMENT_ROOT"]."/kadai3/smarty_test/MySmarty.class.php");
+
+//新しく作ったMySmartyインスタンスの作成
+$smarty = new MySmarty();
+
+
 
 try {
     $dsn = 'mysql:dbname=kadai3;host=127.0.0.1';
@@ -57,11 +55,15 @@ try {
 
         //user_nameがデータベースにない時の処理
         if (!$usr_flag) {
+
             $error_message = 'ユーザー名が存在しません。';
+
         } 
         //ユーザー名の入力が不完全のとき
         else if (($user_password == NULL) || ($user_name == NULL)) {
+
             $error_message = 'ユーザー名とパスワード両方入力してください';
+
         } 
         //正常にユーザー名、パスワードが見つかれば
         else if ($hit_password == $user_password) { 
@@ -72,14 +74,15 @@ try {
             exit;
         } 
         else {
+
             $error_message = 'ユーザー名またはパスワードが異なります。';
+        
         }
 
     }
 
 
-    //新規登録処理
-
+    //新規登録画面に移動
     if (isset($_POST["new_registar"])) {
         $login_url = 'new_registar-smarty.php';
         header("Location: {$login_url}");

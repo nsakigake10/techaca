@@ -1,7 +1,5 @@
-<?php /* Smarty version 2.6.25-dev, created on 2016-06-07 09:46:36
+<?php /* Smarty version 2.6.25-dev, created on 2016-06-19 18:34:51
          compiled from registar_fail.tpl */ ?>
-
-
 <html>
 <head>
     <title>エラー</title>
@@ -10,7 +8,7 @@
 
 
 
-<form action="registar_fail-smarty.php" method="POST">
+<form action="new_registar-smarty.php" >
 
     そのIDは既に使われています。<br />
     <input type="submit" name="fail" value="やり直す" /><br />
@@ -19,9 +17,3 @@
 </form>
 </body>
 </html>
-/**
-* Created by PhpStorm.
-* User: nagashimakaito
-* Date: 2016/05/20
-* Time: 12:53
-*/

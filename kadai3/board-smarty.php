@@ -1,15 +1,13 @@
 <?php
 
-require( dirname( __FILE__ ).'/libs/Smarty.class.php' );
-
-$smarty = new Smarty();
-
-$smarty->template_dir = dirname( __FILE__ ).'/templates'; //テンプレートファイル
-$smarty->compile_dir  = dirname( __FILE__ ).'/templates_c'; //コンパイル結果格納
-$smarty->cache_dir = dirname(__FILE__) . "/cache";
-$smarty->config_dir = dirname(__FILE__) . "/config";
-
 session_start();
+
+require_once($_SERVER["DOCUMENT_ROOT"]."/kadai3/smarty_test/MySmarty.class.php");
+
+//新しく作ったMySmartyインスタンスの作成
+$smarty = new MySmarty();
+
+
 try {
     //データベースの初期設定
     $dsn = 'mysql:dbname=kadai3;host=127.0.0.1';
@@ -45,10 +43,11 @@ try {
     }
 
     //データを投稿するときの処理
+    //ユーザー名・メッセージともに送信された時     
     if ((isset($_POST['postname'])) && (isset($_POST['message']))) {
         $name = ($_POST['postname']);
         $message = ($_POST['message']);
-        $message = nl2br($message);//改行処理F
+        
 
         //ユーザー・本文ともに入力されてなければエラー表示
         if ($name == NULL || $message == NULL) {
@@ -70,15 +69,19 @@ try {
 
 
     //投稿され本文の表示処理
+    //postにある全データを表示する
     $sql = 'select userID, message,ID, memberID from post';
     $stmt = $dbh->prepare($sql);
     $stmt->execute();
 
+    
     while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) { //fetchで実行結果の取得
 
-        //IDとと本文をそれぞれ取り出し、IDをキーとした連想配列にする
+        //fetchの結果を取り出し変数に格納する
         $userID = $result['userID'];
-        $posted_message = $result['message'];
+        $posted_message = $result['message']; 
+        $posted_message = nl2br($posted_message); //表示時に改行処理を行う
+        
         //ログインしたユーザーが過去に投稿した内容は編集・消去のボタンを表示するが他ユーザーは何も表示しない
         $editbutton = '';
         $deletebutton = '';
@@ -87,11 +90,11 @@ try {
         //データベースにpostされたメッセージの投稿者IDとログインしたユーザーIDが等しい場合
         if ($memberID == $result['memberID']) {
             //取り出したメッセージのIDを送信するフォームを保持する変数作成
-            $editbutton = '<form action="edit-smarty.php" method="POST"><input type="hidden" name="editnum" value="' . $edit_id . '" /><button>編集する</button></form>';
-            $deletebutton = '<form action="edit-smarty.php" method="POST"><input type="hidden" name="deletenum" value="' . $edit_id . '" /><button>消去</button></form>';
+            $editbutton = '<form action="edit-smarty.php" method="POST"><input type="hidden" name="edit_func" value="' . $edit_id . '" /><button>編集する</button></form>';
+            $deletebutton = '<form action="edit-smarty.php" method="POST"><input type="hidden" name="delete_func" value="' . $edit_id . '" /><button>消去</button></form>';
 
         }
-        //ユーザーID、本文、編集・消去ボタンについての内容をどんどん配列に加える
+        //ユーザーID、本文、編集・消去ボタンについての内容を連想配列として書く投稿ごとに配列に加える
         $data[] = array('name' => $userID, 'message' => $posted_message, 'edit' => $editbutton, 'delete' => $deletebutton);
     }
 

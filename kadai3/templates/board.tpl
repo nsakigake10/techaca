@@ -46,6 +46,7 @@
 <p>
 user: {$member[output].name}<br/>
 message {$member[output].message}<br/>
+
 {$member[output].edit} {$member[output].delete}<br/>
 </p>
 {/section}

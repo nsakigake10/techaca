@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.25-dev, created on 2016-06-15 07:23:14
+<?php /* Smarty version 2.6.25-dev, created on 2016-06-19 03:37:06
          compiled from board.tpl */ ?>
 <html>
 <head>
@@ -73,6 +73,7 @@ user: <?php echo $this->_tpl_vars['member'][$this->_sections['output']['index']]
 <br/>
 message <?php echo $this->_tpl_vars['member'][$this->_sections['output']['index']]['message']; ?>
 <br/>
+
 <?php echo $this->_tpl_vars['member'][$this->_sections['output']['index']]['edit']; ?>
  <?php echo $this->_tpl_vars['member'][$this->_sections['output']['index']]['delete']; ?>
 <br/>

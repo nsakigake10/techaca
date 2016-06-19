@@ -16,7 +16,7 @@
 
 </form>
 
-<form action= "login-smarty.php" method="POST">
+<form action= "login-smarty.php" >
 
 	<input type="submit" value="戻る" />
 
