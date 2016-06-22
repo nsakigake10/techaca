@@ -5,7 +5,7 @@
 	//smartyクラスを継承したMySmartyクラスを作成する
 	class MySmarty extends Smarty {
 
-		private $dbh;
+		public $dbh;
 		//コンストラクタ
 		function MySmarty(){	
 
@@ -18,6 +18,7 @@
 
 			//Smartyクラスのコンストトラクタの呼び出し
 			$this->Smarty();
+			
 			
 		}
 }

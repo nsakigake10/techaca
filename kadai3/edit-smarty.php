@@ -2,18 +2,13 @@
 
 session_start();
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/kadai3/smarty_test/MySmarty.class.php");
-
+require_once("MySmarty.class.php");
+require_once("db_connect.class.php");
 //新しく作ったMySmartyインスタンスの作成
 $smarty = new MySmarty();
+//データベースのインスタンス作成
+$dbh = new db_connect();
 
-try{
-
-    $dsn = 'mysql:dbname=kadai3;host=127.0.0.1';
-    $user = 'root';
-    $password = 'K/ai1104';
-
-    $dbh = new PDO($dsn, $user, $password);
 
     //編集ボタンが押された時の処理
     if(isset($_POST["edit_func"])) {
@@ -22,12 +17,10 @@ try{
         $edit_num = $_POST["edit_func"]; 
         //該当する投稿をデータベースから引っ張ってくる
         $sql = "select userID,message from post where ID= ?";
-        $stmt = $dbh->prepare($sql);
-        $flag = $stmt->execute(array($edit_num));
-
+        $list = $dbh->pdo_edit($sql,array($edit_num)); 
 
         //編集フォームの表示内容をtplのフォームに表示するためsmarty化
-        if($result = $stmt->fetch(PDO::FETCH_ASSOC)){ //fetchで実行結果の取得
+        foreach($list as $result){ //fetchで実行結果の取得
 
             $smarty->assign('userID',$result['userID']);
             $smarty->assign('message',$result['message']);
@@ -46,8 +39,7 @@ try{
         
         //データの更新
         $sql = "update post set message= ? where ID= ?";
-        $stmt = $dbh->prepare($sql);
-        $flag = $stmt->execute(array($new_message,$edit_num));
+        $dbh->pdo_update($sql,array($new_message,$edit_num));
 
     }
 
@@ -60,8 +52,7 @@ try{
 
         //データの更新
         $sql = "update post set userID= ? where ID= ?";
-        $stmt = $dbh->prepare($sql);
-        $flag = $stmt->execute(array($new_userID,$edit_num));
+        $dbh->pdo_update($sql,array($new_userID,$edit_num));
 
     }
     
@@ -80,20 +71,18 @@ try{
 
         //削除
         $sql = "delete from post where ID= ?";
-        $stmt = $dbh->prepare($sql);
-        $flag = $stmt->execute(array($delete_num));
+        $dbh->pdo_update($sql,array($delete_num));
+
 
         $login_url = 'board-smarty.php';
         header("Location: {$login_url}");
         exit();
 
     }
-}catch (PDOException $e) {
 
-    echo "エラー:" . $e->getMessage(); //メッセージ表示
-
-}
 $smarty->display('edit.tpl');
+
+
 ?>
 
 

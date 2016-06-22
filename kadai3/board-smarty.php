@@ -1,51 +1,36 @@
 <?php
 
-session_start();
+    session_start();
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/kadai3/smarty_test/MySmarty.class.php");
-
-//新しく作ったMySmartyインスタンスの作成
-$smarty = new MySmarty();
+    require_once("MySmarty.class.php");
+    require_once("db_connect.class.php");
 
 
-try {
-    //データベースの初期設定
-    $dsn = 'mysql:dbname=kadai3;host=127.0.0.1';
-    $user = 'root';
-    $password = 'K/ai1104';
+    //新しく作ったMySmartyインスタンスの作成
+    $smarty = new MySmarty();
+    //データベースのインスタンス作成
+    $dbh = new db_connect();
+    //エラーメッセージ初期化    
     $error_message = '';
 
 
-    
 
     //ログインされたユーザーのidを記憶  login画面からデータ受け取る
-    if (isset($_SESSION["loginID"])) { 
+    if (isset($_SESSION["login_ID"])) { 
         //投稿者は好きに投稿時のユーザー名、本文を決められるので
         //ユーザー固有のIDで投稿を管理
-        $memberID = $_SESSION["loginID"]; 
+        $member_ID = $_SESSION["login_ID"]; 
         
     }
 
 
-    $dbh = new PDO($dsn, $user, $password);
-
-
-    if ($dbh == null) {
-        exit('接続に失敗しました。<br>');
-    }
-
-    $result = $dbh->query('SET NAMES utf8');
-    //文字コード指定
-    //一回だけ使用するようなメソッドはqueryをつかう
-
-    if (!$result) {
-        exit('文字コードを指定できませんでした。');
-    }
-
+    
+    
     //データを投稿するときの処理
     //ユーザー名・メッセージともに送信された時     
-    if ((isset($_POST['postname'])) && (isset($_POST['message']))) {
-        $name = ($_POST['postname']);
+    if ((isset($_POST['post_name'])) && (isset($_POST['message']))) {
+
+        $name = ($_POST['post_name']);
         $message = ($_POST['message']);
         
 
@@ -55,15 +40,12 @@ try {
         } else {
             //データの追加処理。
             $sql = "insert into post (userID,message,postdate,memberID) values (?, ?, ?, ?)";
-            $stmt = $dbh->prepare($sql);
             //投稿時間をtime関数で得て、date関数で適切な形に整形
             $time = time();
             $post_time = date("YmdHis", $time);
-            $flag = $stmt->execute(array($name, $message, $post_time, $memberID));
-            //flagが正しく立たなければエラー
-            if (!$flag) {
-                exit('データの追加に失敗しました<br>');
-            }
+            //データの追加を行う
+            $dbh->pdo_update($sql,array($name, $message, $post_time, $member_ID));
+            
         }
     }
 
@@ -71,44 +53,55 @@ try {
     //投稿され本文の表示処理
     //postにある全データを表示する
     $sql = 'select userID, message,ID, memberID from post';
-    $stmt = $dbh->prepare($sql);
-    $stmt->execute();
+    $list = $dbh->pdo_show($sql);///取り出されたすべてのデータが入っている
 
     
-    while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) { //fetchで実行結果の取得
+    //foreachで実行結果をすべて取り出す
 
-        //fetchの結果を取り出し変数に格納する
-        $userID = $result['userID'];
+    foreach ($list as $result) {
+
+
+        //結果を取り出し変数に格納する
+        $user_ID = $result['userID'];
         $posted_message = $result['message']; 
+        $member_posted_ID = $result['memberID'];
+
         $posted_message = nl2br($posted_message); //表示時に改行処理を行う
         
         //ログインしたユーザーが過去に投稿した内容は編集・消去のボタンを表示するが他ユーザーは何も表示しない
-        $editbutton = '';
-        $deletebutton = '';
+        $edit_button = '';
+        $delete_button = '';
         //取り出した投稿のIDを取り出し編集・消去時に適切な投稿に処理が行われるようにする
-        $edit_id = $result['ID'];
-        //データベースにpostされたメッセージの投稿者IDとログインしたユーザーIDが等しい場合
-        if ($memberID == $result['memberID']) {
-            //取り出したメッセージのIDを送信するフォームを保持する変数作成
-            $editbutton = '<form action="edit-smarty.php" method="POST"><input type="hidden" name="edit_func" value="' . $edit_id . '" /><button>編集する</button></form>';
-            $deletebutton = '<form action="edit-smarty.php" method="POST"><input type="hidden" name="delete_func" value="' . $edit_id . '" /><button>消去</button></form>';
-
+        $edit_ID = $result['ID'];
+        
+        $data[] = array('name'=>$user_ID, 'message'=>$posted_message, 'edit_ID'=>$edit_ID, 'member_ID'=>$member_ID, 'member_posted_ID'=>$member_posted_ID);
         }
-        //ユーザーID、本文、編集・消去ボタンについての内容を連想配列として書く投稿ごとに配列に加える
-        $data[] = array('name' => $userID, 'message' => $posted_message, 'edit' => $editbutton, 'delete' => $deletebutton);
-    }
-
     //配列をテンプレートに渡す
-    $smarty->assign('member', $data);
+    $smarty->assign('data', $data);
 
     if ($error_message) {
         print '<font color="red">' . $error_message . '</font>';
     }
 
-}catch (PDOException $e) {
 
-    echo "エラー:" . $e->getMessage(); //メッセージ表示 
-
-}
 $smarty->display('board.tpl');
+
+/*
+
+create table memeber(
+    -> ID varchar(20),
+    -> 名前 varchar(20),
+    -> パスワード varchar(20),
+    -> 登録日 timestamp);
+    
+
+     テーブル定義
+    create table post(
+    -> ID int auto_increment,
+    -> ユーザーID varchar(20),
+    -> primary key(ID),
+    -> 本文 mediumblob,
+    -> 投稿日 timestamp);
+
+*/
 ?>

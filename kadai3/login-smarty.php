@@ -2,23 +2,14 @@
 
 session_start();
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/kadai3/smarty_test/MySmarty.class.php");
+require_once("MySmarty.class.php");
+require_once("db_connect.class.php");
 
 //新しく作ったMySmartyインスタンスの作成
 $smarty = new MySmarty();
+//データベースのインスタンス作成
+$dbh = new db_connect();
 
-
-
-try {
-    $dsn = 'mysql:dbname=kadai3;host=127.0.0.1';
-    $user = 'root';
-    $password = 'K/ai1104';
-
-    $dbh = new PDO($dsn, $user, $password);
-
-    if ($dbh == null) {
-        print('接続に失敗しました。<br>');
-    }
 
     if (isset($_POST['user_name'])) {
         $user_name = ($_POST['user_name']);
@@ -41,20 +32,19 @@ try {
 
         // データベース内のmemberテーブルのnameカラムから入力されたユーザーネームが存在するか確認
         $usr_sql = "select ID,password from member where name= ?";  //sql文
-        $usr_stmt = $dbh->prepare($usr_sql);                        //文の準備
-        $usr_flag = $usr_stmt->execute(array($user_name));          //データの内容を補足
+        $data = $dbh->pdo_fetch($usr_sql,array($user_name));        //実行結果が格納される
 
 
         //hitしたユーザーネームに対応するパスワードを取り出す
         //ログインしたユーザーのIDも取得
 
-        if (($result = $usr_stmt->fetch(PDO::FETCH_ASSOC))) {
-            $hit_password = $result['password'];
-            $_SESSION["loginID"] = $result['ID'];//ログインした人のIDをboardに引き継ぐ
+        if ($data) {
+            $hit_password = $data['password'];
+            $_SESSION["login_ID"] = $data['ID'];//ログインした人のIDをboardに引き継ぐ
         }
 
         //user_nameがデータベースにない時の処理
-        if (!$usr_flag) {
+        if (!$data) {
 
             $error_message = 'ユーザー名が存在しません。';
 
@@ -75,7 +65,7 @@ try {
         } 
         else {
 
-            $error_message = 'ユーザー名またはパスワードが異なります。';
+            $error_message = 'パスワードが異なります。';
         
         }
 
@@ -93,11 +83,7 @@ try {
     if ($error_message) {
         print '<font color="red">' . $error_message . '</font>';
     }
-}catch (PDOException $e) {
 
-    echo "エラー:" . $e->getMessage(); //メッセージ表示
-
-}
 
 $smarty->display('login.tpl');
 
