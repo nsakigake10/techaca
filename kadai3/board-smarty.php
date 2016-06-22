@@ -57,28 +57,28 @@
 
     
     //foreachで実行結果をすべて取り出す
+    //初回時は$lisrが空なので処理をスキップ
+    if($list != null){       
+        foreach ($list as $result) {
 
-    foreach ($list as $result) {
 
+            //結果を取り出し変数に格納する
+            $user_ID = $result['userID'];
+            $posted_message = $result['message']; 
+            $member_posted_ID = $result['memberID'];
 
-        //結果を取り出し変数に格納する
-        $user_ID = $result['userID'];
-        $posted_message = $result['message']; 
-        $member_posted_ID = $result['memberID'];
-
-        $posted_message = nl2br($posted_message); //表示時に改行処理を行う
+            $posted_message = nl2br($posted_message); //表示時に改行処理を行う
         
-        //ログインしたユーザーが過去に投稿した内容は編集・消去のボタンを表示するが他ユーザーは何も表示しない
-        $edit_button = '';
-        $delete_button = '';
-        //取り出した投稿のIDを取り出し編集・消去時に適切な投稿に処理が行われるようにする
-        $edit_ID = $result['ID'];
+            //ログインしたユーザーが過去に投稿した内容は編集・消去のボタンを表示するが他ユーザーは何も表示しない
+            //取り出した投稿のIDを取り出し編集・消去時に適切な投稿に処理が行われるようにする
+            $edit_ID = $result['ID'];
         
-        $data[] = array('name'=>$user_ID, 'message'=>$posted_message, 'edit_ID'=>$edit_ID, 'member_ID'=>$member_ID, 'member_posted_ID'=>$member_posted_ID);
+            $data[] = array('name'=>$user_ID, 'message'=>$posted_message, 'edit_ID'=>$edit_ID, 'member_ID'=>$member_ID, 'member_posted_ID'=>$member_posted_ID);
         }
-    //配列をテンプレートに渡す
-    $smarty->assign('data', $data);
-
+        //配列をテンプレートに渡す
+        $smarty->assign('data', $data);
+    }
+    
     if ($error_message) {
         print '<font color="red">' . $error_message . '</font>';
     }
